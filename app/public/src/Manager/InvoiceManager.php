@@ -16,10 +16,8 @@ class InvoiceManager extends AbstractManager
         } catch(\PDOException $e) {
             dd($e);
         }
-        
-        $invoiceId = $this->connection->lastInsertId();
 
-        $invoice->setId($invoiceId);
+        $invoice->setId($this->connection->lastInsertId());
 
         foreach ($invoice->getInvoiceLines() as $invoiceLine) {
             $invoiceLine->setInvoice($invoice);
