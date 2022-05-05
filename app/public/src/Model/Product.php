@@ -2,12 +2,15 @@
 
 namespace Mii\Invoice\Model;
 
+
 use Mii\Framework\AbstractModel;
 
 class Product extends AbstractModel
 {
     private $id;
+
     private $name;
+
     private $price;
 
     /**

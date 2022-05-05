@@ -2,8 +2,12 @@
 
 namespace Mii\Invoice\Controller;
 
+
 use Mii\Framework\AbstractController;
+use Mii\Invoice\Manager\InvoiceManager;
 use Mii\Invoice\Manager\ProductManager;
+use Mii\Invoice\Model\Invoice;
+use Mii\Invoice\Model\InvoiceLine;
 
 class InvoiceController extends AbstractController
 {
@@ -14,19 +18,35 @@ class InvoiceController extends AbstractController
             ["product" => 2, "quantity" => 2],
             ["product" => 3, "quantity" => 1]
         ];
-       
-        $products = [];
+
         $total = 0;
 
-        foreach($order as $value) {
-            $product = (new ProductManager)->findOneBy($value['product']);
+        $invoice = new Invoice();
 
-            $products[] = ["product" => $product, "quantity" => $value["quantity"]];
+        /**
+         * @todo Enregistrer la facture en BDD.
+         */
+        foreach ($order as $orderLine) {
+            $product = (new ProductManager)->findOneBy($orderLine["product"]);
 
-            $total += $value['quantity'] * $product->getPrice();
+            $invoiceLine = new InvoiceLine();
+            $invoiceLine
+                ->setProduct($product)
+                ->setProductName($product->getName())
+                ->setProductPrice($product->getPrice())
+                ->setQuantity($orderLine["quantity"])
+            ;
+
+            $invoice->addInvoiceLine($invoiceLine);
+
+            $total += $product->getPrice() * $orderLine["quantity"];
         }
-       
 
-        $this->render('invoice/invoice.php', ['products' => $products, 'total' => $total]);
+        (new InvoiceManager)->create($invoice);
+
+        $this->render('invoice/index.html', [
+            "invoice" => $invoice,
+            "total" => $total
+        ]);
     }
 }
