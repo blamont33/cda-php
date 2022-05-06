@@ -5,6 +5,9 @@ namespace Mii\Invoice\Controller;
 
 use Mii\Framework\AbstractController;
 use Mii\Invoice\Manager\ProductManager;
+use Mii\Invoice\Service\CartService;
+use Mii\Invoice\Service\FlashService;
+use Mii\Invoice\Service\TwigService;
 
 class AppController extends AbstractController
 {
@@ -12,17 +15,12 @@ class AppController extends AbstractController
     {
         $products = (new ProductManager)->findAll();
 
-        $this->render('app/index.php', ["name" => "Khalid", "products" => $products]);
-    }
-
-    public function edit()
-    {
-        $this->render('app/edit-product.php');
-    }
-
-    // sur /invoice
-    public function billing()
-    {
+        $this->render('app/index.php', [
+            "name" => "Khalid",
+            "products" => $products,
+            "cartLength" => (new CartService)->getCount(),
+            "flashbag" => (new FlashService)->display()
+        ]);
     }
 
     public function notFound()

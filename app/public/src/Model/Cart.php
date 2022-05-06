@@ -3,19 +3,22 @@
 namespace Mii\Invoice\Model;
 
 use Mii\Framework\AbstractModel;
+use Mii\Invoice\Service\FlashService;
 
 class Cart extends AbstractModel
 {
-    private $cartItem = [];
+    const CART = "cart";
+
+    private $cartItems = [];
 
     private $total = 0;
 
     /**
      * Get the value of cartItem
      */ 
-    public function getCartItem()
+    public function getCartItems()
     {
-        return $this->cartItem;
+        return $this->cartItems;
     }
 
     /**
@@ -25,7 +28,24 @@ class Cart extends AbstractModel
      */ 
     public function addCartItem($cartItem)
     {
-        $this->cartItem[] = $cartItem;
+        $foundItem = array_filter($this->cartItems, function($element) use ($cartItem) {
+            if ($element->getProduct()->getId() === $cartItem->getProduct()->getId()) {
+                $element->setQuantity( (int) $element->getQuantity() + 1);
+            }
+
+            return $element->getProduct()->getId() === $cartItem->getProduct()->getId();
+        });
+
+        $flashService = new FlashService;
+        $flashbag = $flashService->get();
+        $flashbag->addFlashItem(
+            (new FlashItem())->setMessage("Votre produit a bien été ajouté")
+        );
+        $flashService->update($flashbag);
+
+        if (empty($foundItem)) {
+            $this->cartItems[] = $cartItem;
+        }
 
         return $this;
     }

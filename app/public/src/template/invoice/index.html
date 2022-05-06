@@ -18,13 +18,13 @@
             </tr>
         </thead>
         <tbody>
-            {% for orderLine in orderLines %}
+            {% for invoiceLine in invoice.invoiceLines %}
                 <tr>
-                    <td>{{ orderLine.product.id }}</td>
-                    <td>{{ orderLine.product.name }}</td>
-                    <td>{{ orderLine.quantity }}</td>
-                    <td>{{ orderLine.product.price }}</td>
-                    <td>{{ orderLine.product.price * orderLine.quantity }}</td>
+                    <td>{{ invoiceLine.product.id }}</td>
+                    <td>{{ invoiceLine.product.name }}</td>
+                    <td>{{ invoiceLine.quantity }}</td>
+                    <td>{{ invoiceLine.product.price }}</td>
+                    <td>{{ invoiceLine.product.price * invoiceLine.quantity }}</td>
                 </tr>
             {% endfor %}
         </tbody>

@@ -7,6 +7,14 @@
     <title>Document</title>
 </head>
 <body>
+    {% for item in flashbag.flashItems %}
+    <div>
+        <p>{{ item.message }}</p>
+    </div>
+    {% endfor %}
+    <div>
+        panier: {{ cartLength }}
+    </div>
     My name is {{ name }}
 
     <table>
